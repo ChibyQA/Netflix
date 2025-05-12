@@ -1,0 +1,10 @@
+name: first Push
+on: push
+
+jobs:
+    getserviceversions:
+        runs-on: ubuntu-latest
+
+        steps: 
+        - name: Get Git
+          run: git version
