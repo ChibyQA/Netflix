@@ -1,5 +1,6 @@
 name: Netflix App
-on: push
+on: 
+    push:
 
 jobs:
     deploy:
@@ -11,7 +12,14 @@ jobs:
 
         - name: Set up SSH
             run: |
-                mkdir -p ~/.ssh
-                echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-                chmod 600 ~/.ssh/id_rsa
-                ssh-keyscan
+                echo "${{ secrets.SSH_KEY }}" > key.pem
+                chmod 600 key.pem
+
+        -name: Deploy to EC2
+            run: |
+                ssh -o StrictHostKeyChecking=no -i key.pem $ {{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
+                    sudo yum install httpd git -y
+                    sudo systemctl restart httpd
+                    sudo git clone https://github.com/pro-prodipto/Netflix-Website-Project
+                    sudo cp -r /home/${{ secrets.USERNAME }} /Netflix-Website-Project/* /var/www/html
+                EOF
