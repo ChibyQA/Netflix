@@ -1,25 +1,25 @@
 name: Netflix App
 on: 
-    push:
+  push:
 
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
-        steps: 
-        - name: checkout code
-          uses: actions/checkout@v3
+    steps: 
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-        - name: Set up SSH
-          run: |
-            echo "${{ secrets.SSH_KEY }}" > key.pem
-            chmod 600 key.pem
+    - name: Set up SSH
+      run: |
+        echo "${{ secrets.SSH_KEY }}" > key.pem
+        chmod 600 key.pem
 
-        - name: Deploy to EC2
-          run: |
-            ssh -o StrictHostKeyChecking=no -i key.pem $ {{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
-                sudo yum install httpd git -y
-                sudo systemctl restart httpd
-                sudo git clone https://github.com/pro-prodipto/Netflix-Website-Project
-                sudo cp -r /home/${{ secrets.USERNAME }} /Netflix-Website-Project/* /var/www/html
-            EOF
+    - name: Deploy to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no -i key.pem ${{ secrets.USERNAME }}@${{ secrets.HOST }} << 'EOF'
+          sudo yum install httpd git -y
+          sudo systemctl restart httpd
+          git clone https://github.com/pro-prodipto/Netflix-Website-Project
+          sudo cp -r Netflix-Website-Project/* /var/www/html
+        EOF
