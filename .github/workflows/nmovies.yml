@@ -1,10 +1,17 @@
-name: first Push
+name: Netflix App
 on: push
 
 jobs:
-    getserviceversions:
+    deploy:
         runs-on: ubuntu-latest
 
         steps: 
-        - name: Get Git
-          run: git version
+        - name: checkout code
+          run: actions/checkout@v3
+
+        - name: Set up SSH
+            run: |
+                mkdir -p ~/.ssh
+                echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+                chmod 600 ~/.ssh/id_rsa
+                ssh-keyscan
